@@ -1,0 +1,24 @@
+{
+  "configuration": [
+    {
+      "active": true,
+      "createdAt": "2023-03-11 23:31:30.149547+02"
+    }
+  ],
+  "configurationVersion": [
+    {
+      "versionNumber": 1,
+      "configId": 1,
+      "generalizedMathFormula": null,
+      "hash": "",
+      "blockNumber": null,
+      "from": null,
+      "to": null,
+      "value": null,
+      "gas": null,
+      "gasPrice": null,
+      "nonce": null,
+      "createdAt": "2023-03-11 23:31:30.149547+02"
+    }
+  ]
+}
