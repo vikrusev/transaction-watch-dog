@@ -15,7 +15,11 @@ module.exports = {
       },
       configId: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+          model: 'Configurations',
+          key: 'id'
+        }
       },
       generalizedMathFormula: {
         type: Sequelize.STRING

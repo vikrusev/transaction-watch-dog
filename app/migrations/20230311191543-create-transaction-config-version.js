@@ -5,11 +5,19 @@ module.exports = {
     await queryInterface.createTable('TransactionConfigVersions', {
       transactionId: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Transactions',
+          key: 'id'
+        }
       },
       configVersionId: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'ConfigurationVersions',
+          key: 'id'
+        }
       },
 
       // Created by Sequelize
