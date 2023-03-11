@@ -1,4 +1,5 @@
 const Web3Eth = require('web3-eth');
+const eventEmitter = require('../services/event-emitter')
 
 class EthereumMainnetSubscription {
     constructor({ subscriptionType, PROVIDER_WEBSOCKET }) {
@@ -17,10 +18,7 @@ class EthereumMainnetSubscription {
     startMonitoring() {
         this.subscription
             .on('data', (txHash) => {
-                console.log(`New transaction: ${txHash}`)
-                // get transaction and emit to nodejs event
-                // a service should be subscribed to the event
-                // this.web3.getTransaction(txHash).then(response => console.log(`${txHash}: ${JSON.stringify(response)}`));
+                this.web3.getTransaction(txHash).then((transactionData) => eventEmitter.emit('test-event', transactionData));
             })
     }
 
