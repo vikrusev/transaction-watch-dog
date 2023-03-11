@@ -10,13 +10,8 @@ class ConfigurationController {
      * @returns 
      */
     async getAllConfigurations(request, reply) {
-        try {
-            request.log.info('Getting all available configurations...')
-            return { hello: 'worldd' }
-        }
-        catch(err) {
-
-        }
+        request.log.info('Getting all available configurations...')
+        return { hello: 'world' }
     }
 }
 

@@ -5,8 +5,8 @@ const configRouter = require('./config');
  * @param {*} fastify 
  * @param {*} options 
  */
-async function routes(fastify, options) {
+async function registerRoutes(fastify, options) {
     fastify.register(configRouter, { prefix: '/config' });
 }
 
-module.exports = routes;
+module.exports = registerRoutes;

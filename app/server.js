@@ -1,5 +1,6 @@
 const fastify = require('fastify');
-const router = require('./routes');
+const registerRoutes = require('./routes');
+const apiErrorHandler = require('./errors/api-error-handler');
 
 class Server {
     constructor() {
@@ -12,8 +13,8 @@ class Server {
      * Register apiErrorHandler 
      */
     setup() {
-        this.fastify.register(router);
-        // this.fastify.register(apiErrorHandler);
+        registerRoutes(this.fastify);
+        this.fastify.setErrorHandler(apiErrorHandler);
     }
 
     /**
