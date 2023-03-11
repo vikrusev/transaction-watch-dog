@@ -3,18 +3,28 @@ class ApiError {
         this.message = message;
         this.code = code;
     }
+}
 
-    static badRequest(msg) {
-        return new ApiError(400, msg);
-    }
-
-    static notFound(msg) {
-        return new ApiError(404, msg);
-    }
-
-    static internal(msg) {
-        return new ApiError(500, msg);
+class BadRequestException extends ApiError {
+    constructor(message) {
+        super(400, message)
     }
 }
 
-module.exports = ApiError;
+class NotFoundException extends ApiError {
+    constructor(message) {
+        super(404, message)
+    }
+}
+
+class InternalServerException extends ApiError {
+    constructor(message) {
+        super(500, message)
+    }
+}
+
+module.exports = {
+    BadRequestException,
+    NotFoundException,
+    InternalServerException
+};
