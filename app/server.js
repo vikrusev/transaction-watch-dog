@@ -1,17 +1,19 @@
-const fastify = require('fastify')({ logger: true });
+const fastify = require('fastify');
+const router = require('./routes');
 
 class Server {
     constructor() {
-        // the instance should be inside the class
-        // this.registerRoutes();
-
-        router.get('/', async (request, reply) => {
-            return { hello: 'world' }
-        })
+        this.fastify = fastify({ logger: true })
+        this.setup();
     }
 
-    registerRoutes() {
-        // register available routes
+    /**
+     * Register the main router consisting of all fastify routes
+     * Register apiErrorHandler 
+     */
+    setup() {
+        this.fastify.register(router);
+        // this.fastify.register(apiErrorHandler);
     }
 
     /**
@@ -20,11 +22,10 @@ class Server {
      */
     async start(port) {
         try {
-            await fastify.listen({ port })
-
-            fastify.log.info(`Server running on port ${port}`)
+            await this.fastify.listen({ port })
+            this.fastify.log.info(`Server running on port ${port}`)
         } catch (err) {
-            fastify.log.error(`Failed to start the server on port ${port}. Error: ${err}`)
+            this.fastify.log.error(`Failed to start the server on port ${port}. Error: ${err}`)
             process.exit(-1)
         }
     }
@@ -35,11 +36,11 @@ class Server {
      */
     async stop() {
         try {
-            await fastify.close()
-            fastify.log.info('Server successfully stopped!')
+            await this.fastify.close()
+            this.fastify.log.info('Server successfully stopped!')
         }
         catch(err) {
-            fastify.log.error(`Failed to stop the server. Error: ${err}`)
+            this.fastify.log.error(`Failed to stop the server. Error: ${err}`)
         }
     }
 }
