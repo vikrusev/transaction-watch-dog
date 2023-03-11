@@ -11,15 +11,9 @@ async function config(fastify, options) {
     fastify.get('/', configController.getAllConfigurations)
 
     fastify.get(
-        '/id/:id',
+        '/:id',
         { preHandler: validateDto(configDtos.getConfigById) },
         configController.getConfigurationById
-    )
-
-    fastify.get(
-        '/name/:name',
-        { preHandler: validateDto(configDtos.getConfigByName) },
-        configController.getConfigurationByName
     )
 }
 
