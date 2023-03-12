@@ -16,6 +16,12 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false
         }
       })
+      this.hasMany(models.TransactionConfigVersion, {
+        foreignKey: {
+          name: 'id',
+          allowNull: false
+        }
+      })
     }
   }
   ConfigurationVersion.init({

@@ -28,9 +28,7 @@ module.exports = {
       // Taken from the Transaction model
       // They are all optional, allowNull defaults to true
       hash: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+        type: Sequelize.STRING
       },
       blockNumber: {
         type: Sequelize.INTEGER,
