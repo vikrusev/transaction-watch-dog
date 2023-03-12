@@ -5,6 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon -r dotenv/config",
+    "db:init": "npm run db:migrate && npm run db:seed",
+    "db:rollback": "npm run db:seed:undo && npm run db:migrate:undo",
+    "db:migrate": "npx sequelize-cli db:migrate",
+    "db:seed": "npx sequelize-cli db:seed:all",
+    "db:migrate:undo": "npx sequelize-cli db:migrate:undo:all",
+    "db:seed:undo": "npx sequelize-cli db:seed:undo:all",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
