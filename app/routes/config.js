@@ -1,4 +1,4 @@
-const configController = require('../controllers/configuration')
+const configHandlers = require('../handlers/configuration')
 const validateDto = require('../middlewares/validate-dtos')
 const configDtos = require('../dtos/config')
 
@@ -8,12 +8,12 @@ const configDtos = require('../dtos/config')
  * @param {*} options
  */
 async function config(fastify, options) {
-    fastify.get('/', configController.getAllConfigurations)
+    fastify.get('/', configHandlers.getAllConfigurations)
 
     fastify.get(
         '/:id',
         { preHandler: validateDto(configDtos.getConfigById) },
-        configController.getConfigurationById
+        configHandlers.getConfigurationById
     )
 }
 
