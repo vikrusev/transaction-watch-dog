@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.ConfigurationVersion, {
-        foreignKey: 'id'
+        as: 'ConfigurationRules',
+        foreignKey: 'configId'
       })
     }
   }

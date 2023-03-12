@@ -8,6 +8,30 @@ class ConfigurationDao {
     constructor() { }
 
     /**
+     * Gets all Configurations and performs LEFT JOIN to get their versionised rules
+     * Exclude deletedAt and ids from the ConfigurationVersions table
+     * @returns all Configurations
+     */
+    async getAll() {
+        return await Configuration.findAll({
+            attributes: {
+                include: [[sequelize.fn('max', sequelize.col('versionNumber')), 'latestVersionNumber']],
+                exclude: ['deletedAt']
+            },
+            include: {
+                model: ConfigurationVersion,
+                as: 'ConfigurationRules',
+                attributes: {
+                    exclude: ['id', 'configId']
+                },
+                required: false
+            },
+            raw: true,
+            group: ['Configuration.id', 'ConfigurationRules.id']
+        });
+    }
+
+    /**
      * Creates a new Configuration entry in the DB
      * Adds a record in the Configurations and ConfigurationVersions tables
      * @param {*} data - 
