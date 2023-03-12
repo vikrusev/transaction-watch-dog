@@ -26,8 +26,7 @@ class ConfigurationController {
      * @returns 
      */
     async getConfigurationById({ params }, reply) {
-        request.log.info(`Getting configuration w/ id #${params.id}...`)
-        return { hello: 'world' }
+        return await this.configurationDao.getOneById(params.id);
     }
 
     /**
@@ -37,8 +36,10 @@ class ConfigurationController {
      * @returns - the id from the DB of the newly created Configuration row
      */
     async createConfiguration({ body: configurationData }, reply) {
-        const result = await this.configurationDao.create(configurationData)
-        return { newId: result }
+        const newId = await this.configurationDao.create(configurationData)
+        reply.statusCode = 201;
+
+        return { newId }
     }
 }
 
