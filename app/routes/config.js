@@ -15,6 +15,16 @@ async function config(fastify, options) {
         { preHandler: validateDto(configDtos.getConfigById) },
         configHandlers.getConfigurationById
     )
+
+    fastify.post(
+        '/',
+        {
+            schema: {
+                body: configDtos.createConfig
+            }
+        },
+        configHandlers.createConfiguration
+    )
 }
 
 module.exports = config

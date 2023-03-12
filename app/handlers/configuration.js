@@ -24,6 +24,11 @@ class ConfigurationController {
         request.log.info(`Getting configuration w/ id #${params.id}...`)
         return { hello: 'world' }
     }
+
+    async createConfiguration(request, reply) {
+        request.log.info(`Getting configuration w/ id #${request.body}...`)
+        return { hello: 'world' }
+    }
 }
 
 module.exports = new ConfigurationController();
