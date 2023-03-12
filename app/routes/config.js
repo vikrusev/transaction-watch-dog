@@ -48,7 +48,7 @@ async function config(fastify, options) {
                 body: configDtos.updateConfig
             }
         },
-        configHandlers.createConfiguration // TODO
+        configHandlers.patchConfiguration
     )
 }
 

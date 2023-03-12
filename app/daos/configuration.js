@@ -9,7 +9,7 @@ class ConfigurationDao {
     constructor() {
         this.configurationLeftJoinRules = {
             attributes: {
-                include: [[sequelize.fn('max', sequelize.col('versionNumber')), 'latestVersionNumber']],
+                include: [[sequelize.literal('(SELECT MAX("versionNumber") FROM "ConfigurationVersions" WHERE "configId" = "Configuration"."id")'), 'latestVersionNumber']],
                 exclude: ['deletedAt']
             },
             include: {
@@ -31,7 +31,7 @@ class ConfigurationDao {
      * @returns {number} - the latest version of a Configuration
      * @throws {NotFoundException} - if no version of the Configuration is found
      */
-    async getLatestConfigurationVersion(configId) {
+    async getLatestConfigurationVersionNumber(configId) {
         const latestVersion = ConfigurationVersion.max('versionNumber', {
             where: {
                 configId
@@ -45,6 +45,31 @@ class ConfigurationDao {
         }
 
         return latestVersion;
+    }
+
+    /**
+     * Get the latest Version of a Configuration
+     * @param {*} configId - the id of the Configuration to find the latest Version
+     * @param {*} id 
+     * @returns the latest Version of the Configuration
+     */
+    async getLatestConfigurationVersion(configId) {
+        const latestConfigurationVersion = await ConfigurationVersion.findOne({
+            order: [['versionNumber', 'DESC']],
+            attributes: {
+                exclude: ['id', 'configId', 'createdAt']
+            },
+            where: {
+                configId
+            },
+            raw: true
+        });
+
+        if (!latestConfigurationVersion) {
+            throw new NotFoundException(`No latest version for Configuration w/ id #${configId} was found`);
+        }
+
+        return latestConfigurationVersion;
     }
 
     /**
@@ -63,15 +88,24 @@ class ConfigurationDao {
      * @returns a single Configuration
      * @throws {NotFoundException} - if the Configuration is not found
      */
-    async getOneById(configurationId) {
-        const configuration = await Configuration.findByPk(configurationId, this.configurationLeftJoinRules);
+    async getFullConfigurationById(configurationId) {
+        const configuration = await Configuration.findByPk(configurationId, {
+            attributes: {
+                exclude: ['deletedAt']
+            },
+            raw: true
+        });
+        const latestConfigurationVersion = await this.getLatestConfigurationVersion(configurationId);
 
         // Check if a Configuration entry exists
         if (!configuration) {
             throw new NotFoundException(`Configuration w/ id #${configurationId} could not be found.`);
         }
 
-        return configuration;
+        return {
+            ...configuration,
+            ...latestConfigurationVersion
+        }
     }
 
     /**
@@ -80,13 +114,13 @@ class ConfigurationDao {
      * @param {*} data - data of the new Configuration
      * @returns 
      */
-    async create(data) {
+    async create({ id: configurationId, ...newData }) {
         return await sequelize.transaction(async t => {
             const newConfiguration = await Configuration.create({
-                active: data.active
+                active: newData.active
             });
             await ConfigurationVersion.create({
-                ...data,
+                ...newData,
                 versionNumber: 1,
                 configId: newConfiguration.id
             });
@@ -104,27 +138,62 @@ class ConfigurationDao {
      * @param {*} data - new data of the Configuration
      * @returns 
      */
-    async updateWhole(configuration) {
+    async updateWhole({ id: configurationId, ...newData }) {
         // Get current latest version of the Configuration
-        const latestVersion = await this.getLatestConfigurationVersion(configuration.id);
+        const latestVersion = await this.getLatestConfigurationVersionNumber(configurationId);
 
         return await sequelize.transaction(async t => {
-            // do not include an id property to the creation as it is picked and used
-            const configurationId = configuration.id;
-            delete configuration.id
-
+            // update the Configuration
             await Configuration.update({
-                active: configuration.active,
+                active: newData.active,
             }, {
                 where: {
                     id: configurationId
                 }
             });
 
+            // create a new Version of the Configuration
             const { createdAt, versionNumber } = await ConfigurationVersion.create({
-                ...configuration,
+                ...newData,
                 configId: configurationId,
                 versionNumber: 1 + latestVersion,
+            });
+
+            return {
+                versionNumber,
+                updatedAt: createdAt
+            }
+        })
+    }
+
+    /**
+     * Patches a Configuration
+     * Updates Configuration
+     * 
+     * Creates a new Version of the Configuration, preserving the old rules
+     * And patches the given ones
+     * @param {*} configuration - newly incoming Configuration data 
+     */
+    async patchConfiguration({ id: configurationId, ...newData }) {
+        // get current data from DB
+        const { id, createdAt, ...currentData } = await this.getFullConfigurationById(configurationId);
+
+        return await sequelize.transaction(async t => {
+            // update the Configuration
+            await Configuration.update({
+                active: newData.active ?? currentData.active,
+            }, {
+                where: {
+                    id: configurationId
+                }
+            });
+
+            // create a new Version of the Configuration
+            const { createdAt, versionNumber } = await ConfigurationVersion.create({
+                ...currentData,
+                ...newData,
+                configId: configurationId,
+                versionNumber: 1 + currentData.versionNumber,
             });
 
             return {

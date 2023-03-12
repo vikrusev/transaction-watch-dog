@@ -9,6 +9,7 @@ class ConfigurationController {
         this.getConfigurationById = this.getConfigurationById.bind(this);
         this.createConfiguration = this.createConfiguration.bind(this);
         this.updateOrCreateWholeConfiguration = this.updateOrCreateWholeConfiguration.bind(this);
+        this.patchConfiguration = this.patchConfiguration.bind(this);
     }
 
     /**
@@ -28,7 +29,7 @@ class ConfigurationController {
      * @returns 
      */
     async getConfigurationById({ params }, reply) {
-        return await this.configurationDao.getOneById(params.id);
+        return await this.configurationDao.getFullConfigurationById(params.id);
     }
 
     /**
@@ -50,7 +51,7 @@ class ConfigurationController {
      * It can be partial update or complete update
      * Both update and create will CREATE a new entry
      * This is because we DO want to preserve the Configuration rule versions
-     * @param {*} param0 - incoming data of the configuration object
+     * @param {*} param0 - incoming data of a Configuration
      * @param {*} reply 
      * @returns - the id from the DB of the newly created Configuration row
      */
@@ -60,7 +61,7 @@ class ConfigurationController {
 
         try {
             // Will throw NotFoundException if the resource does not exist in the DB
-            await this.configurationDao.getOneById(configurationData.id);
+            await this.configurationDao.getFullConfigurationById(configurationData.id);
         }
         catch(error) {
             // Resourse was not found in the DB
@@ -76,6 +77,19 @@ class ConfigurationController {
         // The resourse exists - update it
         // NOTE: The method CREATES a new record because of Configuration rule versioning
         return await this.configurationDao.updateWhole(configurationData);
+    }
+
+    /**
+     * Patches a Configuration
+     * Preserve all data and just update properties specified in the incoming data
+     * @param {*} param0 - incoming new data for a Configuration
+     * @param {*} reply 
+     */
+    async patchConfiguration({ body: configurationData }, reply) {
+        // In case of an error, the statusCode will be set accordingly by the api-error-handler
+        reply.statusCode = 201;
+
+        return await this.configurationDao.patchConfiguration(configurationData);
     }
 }
 
