@@ -24,9 +24,16 @@ module.exports = (sequelize, DataTypes) => {
     gasPrice: DataTypes.STRING,
     nonce: DataTypes.INTEGER,
 
-    createdAt: DataTypes.DATE
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    },
+    updatedAt: {
+      type: DataTypes.DATE
+    }
   }, {
     sequelize,
+    paranoid: true,
     modelName: 'Transaction',
   });
   return Transaction;

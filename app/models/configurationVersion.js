@@ -35,9 +35,13 @@ module.exports = (sequelize, DataTypes) => {
     gasPrice: DataTypes.STRING,
     nonce: DataTypes.INTEGER,
 
-    createdAt: DataTypes.DATE
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    }
   }, {
     sequelize,
+    timestamps: false,
     modelName: 'ConfigurationVersion',
   });
   return ConfigurationVersion;

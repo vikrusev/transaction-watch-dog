@@ -17,9 +17,16 @@ module.exports = (sequelize, DataTypes) => {
     active: DataTypes.BOOLEAN,
     deletedAt: DataTypes.DATE,
 
-    createdAt: DataTypes.DATE
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    },
+    updatedAt: {
+      type: DataTypes.DATE
+    }
   }, {
     sequelize,
+    paranoid: true,
     modelName: 'Configuration',
   });
   return Configuration;

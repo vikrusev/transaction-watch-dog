@@ -14,11 +14,14 @@ module.exports = {
         defaultValue: true,
         allowNull: false
       },
+
+      // Created by Sequelize
       deletedAt: {
         type: Sequelize.DATE
       },
-      
-      // Created by Sequelize
+      updatedAt: {
+        type: Sequelize.DATE
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

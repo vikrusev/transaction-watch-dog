@@ -22,9 +22,13 @@ module.exports = (sequelize, DataTypes) => {
     transactionId: DataTypes.INTEGER,
     configVersionId: DataTypes.INTEGER,
 
-    createdAt: DataTypes.DATE
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    }
   }, {
     sequelize,
+    timestamps: false,
     modelName: 'TransactionConfigVersion',
   });
   return TransactionConfigVersion;
