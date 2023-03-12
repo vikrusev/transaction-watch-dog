@@ -1,4 +1,4 @@
-const ApiError = require('./api-error');
+const { ApiError } = require('./api-error');
 
 function apiErrorHandler(err, request, reply) {
     request.log.error(`An error has occured. code: ${err.code} | message: ${err.message}`)
@@ -9,7 +9,7 @@ function apiErrorHandler(err, request, reply) {
     }
 
     reply.statusCode = 500;
-    return ApiError.internal('Something went wrong');
+    return { message: 'Something went wrong' };
 }
 
 module.exports = apiErrorHandler;

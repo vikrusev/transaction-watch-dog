@@ -11,6 +11,12 @@ class BadRequestException extends ApiError {
     }
 }
 
+class InvalidFormatException extends ApiError {
+    constructor(message) {
+        super(403, message)
+    }
+}
+
 class NotFoundException extends ApiError {
     constructor(message) {
         super(404, message)
@@ -24,7 +30,9 @@ class InternalServerException extends ApiError {
 }
 
 module.exports = {
+    ApiError,
     BadRequestException,
+    InvalidFormatException,
     NotFoundException,
     InternalServerException
 };
