@@ -21,5 +21,10 @@ server.start(port);
         PROVIDER_WEBSOCKET: process.env.PROVIDER_WEBSOCKET
     }
     const ethSubscription = new EthereumMainnetSubscription(ethSubscriptionOptions);
-    ethSubscription.startMonitoring();
+
+    // Start if explicitly said so
+    // The idea is to reduce distraction while developing
+    if (process.env.NODE_ENV === 'production' || process.env.MONITOR_ETHEREUM_MAINNET === '1') {
+        ethSubscription.startMonitoring();
+    }
 })()
