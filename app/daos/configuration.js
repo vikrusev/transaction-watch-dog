@@ -16,7 +16,7 @@ class ConfigurationDao {
                 model: ConfigurationVersion,
                 as: 'ConfigurationRules',
                 attributes: {
-                    exclude: ['id', 'configId']
+                    exclude: ['configId']
                 },
                 required: false
             },
