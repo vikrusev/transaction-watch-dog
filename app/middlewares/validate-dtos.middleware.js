@@ -1,4 +1,4 @@
-const { BadRequestException } = require('../errors/api-error');
+const { BadRequestException } = require('../errors/api-error.class');
 
 /**
  * Validate incoming requests

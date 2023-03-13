@@ -1,9 +1,9 @@
 const { EventEmitter } = require('events');
 const eventEmitter = new EventEmitter();
 
-const TransactionDao = require('../daos/transaction')
+const TransactionDao = require('../daos/transaction.dao')
 
-const ActiveConfiguration = require('./active-configuration')
+const ActiveConfiguration = require('./active-configuration.service')
 const functions = require('../web3/transaction-utilities')
 
 const WorkerPool = require('../worker-pool');

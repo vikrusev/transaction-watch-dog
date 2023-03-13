@@ -1,5 +1,5 @@
-const { NotFoundException } = require('../errors/api-error');
-const ConfigurationDao = require('../daos/configuration');
+const { NotFoundException } = require('../errors/api-error.class');
+const ConfigurationDao = require('../daos/configuration.dao');
 
 class ConfigurationController {
     constructor() {

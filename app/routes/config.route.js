@@ -1,6 +1,6 @@
-const configHandlers = require('../handlers/configuration')
-const validateDto = require('../middlewares/validate-dtos')
-const updateCurrentConfigurationList = require('../middlewares/update-configuration-list')
+const configHandlers = require('../handlers/configuration.handler')
+const validateDto = require('../middlewares/validate-dtos.middleware')
+const updateCurrentConfigurationList = require('../middlewares/update-configuration-list.middleware')
 const configDtos = require('../dtos/config')
 
 /**

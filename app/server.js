@@ -1,8 +1,8 @@
 const fastify = require('fastify');
 const registerRoutes = require('./routes');
-const apiErrorHandler = require('./errors/api-error-handler');
+const apiErrorHandler = require('./errors/api-error.handler');
 
-const ActiveConfiguration = require('./services/active-configuration');
+const ActiveConfiguration = require('./services/active-configuration.service');
 
 class Server {
     constructor() {

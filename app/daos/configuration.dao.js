@@ -1,4 +1,4 @@
-const { NotFoundException } = require('../errors/api-error');
+const { NotFoundException } = require('../errors/api-error.class');
 const { Configuration, ConfigurationVersion } = require('../models');
 const sequelize = require('../db');
 

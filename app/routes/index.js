@@ -1,5 +1,5 @@
-const { InvalidFormatException } = require('../errors/api-error');
-const configRouter = require('./config');
+const { InvalidFormatException } = require('../errors/api-error.class');
+const configRouter = require('./config.route');
 
 /**
  * Register all available 

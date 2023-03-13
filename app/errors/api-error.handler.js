@@ -1,4 +1,4 @@
-const { ApiError } = require('./api-error');
+const { ApiError } = require('./api-error.class');
 
 function apiErrorHandler(err, request, reply) {
     request.log.error(`An error has occured. code: ${err.code} | message: ${err.message}`)

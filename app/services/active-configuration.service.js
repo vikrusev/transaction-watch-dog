@@ -1,4 +1,4 @@
-const ConfigurationDao = require('../daos/configuration');
+const ConfigurationDao = require('../daos/configuration.dao');
 
 /**
  * Service, responsible for managing and providing the active Configurations

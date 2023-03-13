@@ -1,6 +1,6 @@
-const identifyConfigById = require('./identify-config-by-id')
-const createConfig = require('./create-config')
-const updateConfig = require('./update-config')
+const identifyConfigById = require('./identify-config-by-id.dto')
+const createConfig = require('./create-config.dto')
+const updateConfig = require('./update-config.dto')
 
 module.exports = {
     identifyConfigById,

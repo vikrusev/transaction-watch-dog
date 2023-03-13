@@ -1,5 +1,5 @@
 const Web3Eth = require('web3-eth');
-const eventEmitter = require('../services/event-emitter')
+const eventEmitter = require('../services/event-emitter.service')
 
 const { MAX_TRANSACTION_COUNT } = process.env
 let counter = 0

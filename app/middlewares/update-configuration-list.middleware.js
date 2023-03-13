@@ -1,4 +1,4 @@
-const ActiveConfiguration = require('../services/active-configuration')
+const ActiveConfiguration = require('../services/active-configuration.service')
 
 /**
  * Updates Current Active Configuration List
