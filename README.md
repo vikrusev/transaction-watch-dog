@@ -60,6 +60,11 @@
 ## TODO
 
 * better loggin system
+* rename files to include their type
+    * `.dao.js`
+    * `.controller.js`
+    * `.route.js`
+    * etc
 * include ESLint
 * implement `DI Awilix`
 * better README documentation
