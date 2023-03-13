@@ -8,7 +8,7 @@
  */
 const filterTransactions = (transactionsData, activeConfigurationList) => {
     // key is id of the Transaction and value is an array of which Configurations satisfy it
-    const transactionsWithConfigurations = {}
+    const transactionsWithConfigurations = []
 
     // Loop all transactions and all Configurations
     for (const transaction of transactionsData) {
@@ -17,13 +17,10 @@ const filterTransactions = (transactionsData, activeConfigurationList) => {
             const isSatisfied = satisfiedByConfiguration(transaction, configuration)
 
             if (isSatisfied) {
-                // initialise transaction property
-                if (!transactionsWithConfigurations[transaction.hash]) {
-                    transactionsWithConfigurations[transaction.hash] = [configuration['ConfigurationRules.id']]
-                }
-                else {
-                    transactionsWithConfigurations[transaction.hash].push(configuration['ConfigurationRules.id'])
-                }
+                transactionsWithConfigurations.push({
+                    hash: transaction.hash,
+                    configVersionId: configuration['ConfigurationRules.id']
+                })
             }
         }
     }

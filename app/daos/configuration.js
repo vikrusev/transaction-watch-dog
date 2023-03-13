@@ -7,6 +7,8 @@ const sequelize = require('../db');
  */
 class ConfigurationDao {
     constructor() {
+        // make a LEFT JOIN from ConfigurationVersions ON Configuration
+        // also put alias latestVersionNumber, which is the MAX versionNumber of the ConfigurationVersions
         this.configurationLeftJoinRules = {
             attributes: {
                 include: [[sequelize.literal('(SELECT MAX("versionNumber") FROM "ConfigurationVersions" WHERE "configId" = "Configuration"."id")'), 'latestVersionNumber']],
@@ -25,6 +27,11 @@ class ConfigurationDao {
         };
     }
 
+    /**
+     * Gets all latest version of the active Configurations
+     * @returns an array w/ Configurations
+     * @throws {NotFoundException} if no Configuration was found
+     */
     async getCurrentActiveConfigurations() {
         const allConfigurations = await this.getAll()
 
