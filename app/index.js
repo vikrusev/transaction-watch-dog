@@ -9,7 +9,7 @@ server.start(port);
 
 // The Ethereum Subscription is responsible for listening for new transcations
 const ethSubscriptionOptions = {
-    subscriptionType: 'newPendingTransactions',
+    subscriptionType: 'pendingTransactions',
     PROVIDER_WEBSOCKET: process.env.PROVIDER_WEBSOCKET
 }
 const ethSubscription = new EthereumMainnetSubscription(ethSubscriptionOptions);
