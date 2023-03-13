@@ -1,9 +1,14 @@
 const configHandlers = require('../handlers/configuration')
 const validateDto = require('../middlewares/validate-dtos')
+const updateCurrentConfigurationList = require('../middlewares/update-configuration-list')
 const configDtos = require('../dtos/config')
 
 /**
  * All Configuration endpoints
+ * 
+ * When an endpoint which alters the active Configurtions is called
+ * the preHandler for updating the Current Active Configuration List
+ * should be added
  * @param {*} fastify
  * @param {*} options
  */
@@ -24,7 +29,8 @@ async function config(fastify, options) {
         {
             schema: {
                 body: configDtos.createConfig
-            }
+            },
+            preHandler: updateCurrentConfigurationList
         },
         configHandlers.createConfiguration
     )
@@ -35,7 +41,8 @@ async function config(fastify, options) {
         {
             schema: {
                 body: configDtos.updateConfig
-            }
+            },
+            preHandler: updateCurrentConfigurationList
         },
         configHandlers.updateOrCreateWholeConfiguration
     )
@@ -46,7 +53,8 @@ async function config(fastify, options) {
         {
             schema: {
                 body: configDtos.updateConfig
-            }
+            },
+            preHandler: updateCurrentConfigurationList
         },
         configHandlers.patchConfiguration
     )
@@ -54,7 +62,12 @@ async function config(fastify, options) {
     // Delete a Configuration
     fastify.delete(
         '/:id',
-        { preHandler: validateDto(configDtos.identifyConfigById) },
+        { 
+            preHandler: [
+                validateDto(configDtos.identifyConfigById),
+                updateCurrentConfigurationList
+            ]
+        },
         configHandlers.deleteConfiguration
     )
 }
