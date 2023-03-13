@@ -10,6 +10,7 @@ class ActiveConfiguration {
         this.configurationDao = new ConfigurationDao();
 
         this.init = this.init.bind(this)
+        this.getActiveConfigurationList = this.getActiveConfigurationList.bind(this)
     }
 
     /**

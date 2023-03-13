@@ -1,5 +1,5 @@
-const filterTransactions = (transaction) => {
-    console.log(process.pid)
+const filterTransactions = (transaction, activeConfigurationList) => {
+    return activeConfigurationList.length
 }
 
 module.exports = {

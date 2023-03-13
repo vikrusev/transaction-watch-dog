@@ -1,5 +1,7 @@
 const { EventEmitter } = require('events');
 const eventEmitter = new EventEmitter();
+
+const ActiveConfiguration = require('./active-configuration')
 const functions = require('../web3/transaction-utilities')
 
 const WorkerPool = require('../worker-pool');
@@ -10,7 +12,7 @@ eventEmitter.on('new-transaction', async (transactionData) => {
     if (process.env.WORKER_POOL_ENABLED === '1') {
         // execute a function through the workerPool middlware proxy
         const workerPoolProxy = WorkerPool.getProxy()
-        const result = await workerPoolProxy.filterTransactions(transactionData)
+        const result = await workerPoolProxy.filterTransactions(transactionData, ActiveConfiguration.getActiveConfigurationList())
     } else { // TODO check
         setInterval(async () => {
             const result = await functions.filterTransactions(transactionData)
