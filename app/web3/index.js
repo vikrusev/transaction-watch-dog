@@ -1,6 +1,9 @@
 const Web3Eth = require('web3-eth');
 const eventEmitter = require('../services/event-emitter')
 
+const { MAX_TRANSACTION_COUNT } = process.env
+let counter = 0
+
 class EthereumMainnetSubscription {
     constructor({ subscriptionType, PROVIDER_WEBSOCKET }) {
         this.web3 = new Web3Eth(PROVIDER_WEBSOCKET);
@@ -18,11 +21,13 @@ class EthereumMainnetSubscription {
     startMonitoring() {
         this.subscription
             .on('data', (txHash) => {
-                this.web3.getTransaction(txHash).then((transactionData) => {
-                    if (transactionData) {
-                        eventEmitter.emit('new-transaction', transactionData)
-                    }
-                });
+                if (counter++ < MAX_TRANSACTION_COUNT) {
+                    this.web3.getTransaction(txHash).then((transactionData) => {
+                        if (transactionData) {
+                            eventEmitter.emit('new-transaction', transactionData)
+                        }
+                    });
+                }
             })
     }
 
