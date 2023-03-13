@@ -15,8 +15,7 @@ module.exports = {
         unique: true
       },
       blockNumber: {
-        type: Sequelize.INTEGER,
-        allowNull: false
+        type: Sequelize.INTEGER
       },
       from: {
         type: Sequelize.STRING,
@@ -24,7 +23,7 @@ module.exports = {
       },
       to: {
         type: Sequelize.STRING,
-        allowNull: false
+        // allowNull: false // can actually be null
       },
       value: {
         type: Sequelize.STRING,
