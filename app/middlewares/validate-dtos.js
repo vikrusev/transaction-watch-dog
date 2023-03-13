@@ -1,4 +1,4 @@
-const ApiError = require('../errors/api-error');
+const { BadRequestException } = require('../errors/api-error');
 
 /**
  * Validate incoming requests
@@ -13,8 +13,7 @@ function validate(schema) {
         const { error, value } = schema.validate(requestData);
 
         if (error) {
-            done(ApiError.badRequest(error.message ?? error.details[0].message));
-            return;
+            throw new BadRequestException(error.message ?? error.details[0].message);
         }
 
         done();
