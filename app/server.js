@@ -2,6 +2,8 @@ const fastify = require('fastify');
 const registerRoutes = require('./routes');
 const apiErrorHandler = require('./errors/api-error-handler');
 
+const ActiveConfiguration = require('./services/active-configuration');
+
 class Server {
     constructor() {
         this.fastify = fastify({ logger: true })
@@ -25,6 +27,8 @@ class Server {
         try {
             await this.fastify.listen({ port })
             this.fastify.log.info(`Server running on port ${port}`)
+
+            await this.initActiveConfigurationsList();
         } catch (err) {
             this.fastify.log.error(`Failed to start the server on port ${port}. Error: ${err}`)
             process.exit(-1)
@@ -43,6 +47,13 @@ class Server {
         catch(err) {
             this.fastify.log.error(`Failed to stop the server. Error: ${err}`)
         }
+    }
+
+    /**
+     * Load the initial active Configurations from the DB
+     */
+    async initActiveConfigurationsList() {
+        await ActiveConfiguration.init()
     }
 }
 

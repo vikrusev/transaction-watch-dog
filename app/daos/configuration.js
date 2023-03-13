@@ -25,6 +25,19 @@ class ConfigurationDao {
         };
     }
 
+    async getCurrentActiveConfigurations() {
+        const allConfigurations = await this.getAll()
+
+        if (!allConfigurations) {
+            throw new NotFoundException('No configurations found while getting Current Active Configuration List')
+        }
+
+        // filter the active and latest Configurations
+        return allConfigurations.filter(config =>
+            config.active && config.latestVersionNumber === config['ConfigurationRules.versionNumber']
+        )
+    }
+
     /**
      * Get the latest version of a specific Configuration
      * @param {*} configId - the configuration id of which we want to get the latest version
@@ -32,7 +45,7 @@ class ConfigurationDao {
      * @throws {NotFoundException} - if no version of the Configuration is found
      */
     async getLatestConfigurationVersionNumber(configId) {
-        const latestVersion = ConfigurationVersion.max('versionNumber', {
+        const latestVersion = await ConfigurationVersion.max('versionNumber', {
             where: {
                 configId
             },
