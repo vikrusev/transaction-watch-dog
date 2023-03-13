@@ -1,6 +1,8 @@
 const { EventEmitter } = require('events');
 const eventEmitter = new EventEmitter();
 
+const TransactionDao = require('../daos/transaction')
+
 const ActiveConfiguration = require('./active-configuration')
 const functions = require('../web3/transaction-utilities')
 
@@ -22,9 +24,18 @@ setInterval(async () => {
     if (process.env.WORKER_POOL_ENABLED === '1') {
         // execute a function through the workerPool middlware proxy
         const workerPoolProxy = WorkerPool.getProxy()
-        const result = await workerPoolProxy.filterTransactions(copiedTransactions, ActiveConfiguration.getActiveConfigurationList())
+
+        try {
+            const filteredTransactions = await workerPoolProxy.filterTransactions(copiedTransactions, ActiveConfiguration.getActiveConfigurationList())
+            if (Object.keys(filteredTransactions).length) {
+                await (new TransactionDao()).bulkInsertTransctions(filteredTransactions)
+            }
+        }
+        catch(error) {
+            console.error(`Something happened while filtering and bulk inserting data. Error: ${error}`)
+        }
     } else { // TODO check
-        const result = await functions.filterTransactions(copiedTransactions)
+        const result = functions.filterTransactions(copiedTransactions)
     }
 
     // reset the accumulative transactions array
