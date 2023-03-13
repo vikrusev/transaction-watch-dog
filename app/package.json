@@ -1,48 +1,52 @@
 {
-  "name": "eth-blockchain-watch-dog",
-  "version": "1.0.0",
-  "description": "Monitor all transactions on the Ethereum blockchain network",
-  "main": "index.js",
-  "scripts": {
-    "start": "nodemon -r dotenv/config",
-    "db:init": "npm run db:migrate && npm run db:seed",
-    "db:rollback": "npm run db:seed:undo && npm run db:migrate:undo",
-    "db:migrate": "npx sequelize-cli db:migrate",
-    "db:seed": "npx sequelize-cli db:seed:all",
-    "db:migrate:undo": "npx sequelize-cli db:migrate:undo:all",
-    "db:seed:undo": "npx sequelize-cli db:seed:undo:all",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "engines": {
-    "node": ">=18.13.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/vikrusev/transaction-watch-dog.git"
-  },
-  "keywords": [
-    "Ethereum",
-    "Transactions",
-    "Blockchain"
-  ],
-  "author": "Viktor Rusev",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/vikrusev/transaction-watch-dog/issues"
-  },
-  "homepage": "https://github.com/vikrusev/transaction-watch-dog#readme",
-  "devDependencies": {
-    "nodemon": "^2.0.21",
-    "pg": "^8.10.0",
-    "sequelize-cli": "^6.6.0"
-  },
-  "dependencies": {
-    "cls-hooked": "^4.2.2",
-    "dotenv": "^16.0.3",
-    "fastify": "^4.14.1",
-    "joi": "^17.8.3",
-    "sequelize": "^6.29.3",
-    "web3-eth": "^1.8.2",
-    "workerpool": "^6.4.0"
-  }
+    "name": "eth-blockchain-watch-dog",
+    "version": "1.0.0",
+    "description": "Monitor all transactions on the Ethereum blockchain network",
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon -r dotenv/config",
+        "db:init": "npm run db:migrate && npm run db:seed",
+        "db:rollback": "npm run db:seed:undo && npm run db:migrate:undo",
+        "db:migrate": "npx sequelize-cli db:migrate",
+        "db:seed": "npx sequelize-cli db:seed:all",
+        "db:migrate:undo": "npx sequelize-cli db:migrate:undo:all",
+        "db:seed:undo": "npx sequelize-cli db:seed:undo:all",
+        "lint:fix": "eslint --fix .",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "engines": {
+        "node": ">=18.13.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/vikrusev/transaction-watch-dog.git"
+    },
+    "keywords": [
+        "Ethereum",
+        "Transactions",
+        "Blockchain"
+    ],
+    "author": "Viktor Rusev",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/vikrusev/transaction-watch-dog/issues"
+    },
+    "homepage": "https://github.com/vikrusev/transaction-watch-dog#readme",
+    "devDependencies": {
+        "eslint": "^8.36.0",
+        "eslint-config-prettier": "^8.7.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "nodemon": "^2.0.21",
+        "pg": "^8.10.0",
+        "sequelize-cli": "^6.6.0"
+    },
+    "dependencies": {
+        "cls-hooked": "^4.2.2",
+        "dotenv": "^16.0.3",
+        "fastify": "^4.14.1",
+        "joi": "^17.8.3",
+        "sequelize": "^6.29.3",
+        "web3-eth": "^1.8.2",
+        "workerpool": "^6.4.0"
+    }
 }

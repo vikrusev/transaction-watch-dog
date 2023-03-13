@@ -5,14 +5,13 @@ const configDtos = require('../dtos/config')
 
 /**
  * All Configuration endpoints
- * 
+ *
  * When an endpoint which alters the active Configurtions is called
  * the preHandler for updating the Current Active Configuration List
  * should be added
  * @param {*} fastify
- * @param {*} options
  */
-async function config(fastify, options) {
+async function config(fastify) {
     // Get all available Configurations
     fastify.get('/', configHandlers.getAllConfigurations)
 
@@ -62,7 +61,7 @@ async function config(fastify, options) {
     // Delete a Configuration
     fastify.delete(
         '/:id',
-        { 
+        {
             preHandler: [
                 validateDto(configDtos.identifyConfigById),
                 updateCurrentConfigurationList

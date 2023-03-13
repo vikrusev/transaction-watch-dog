@@ -1,6 +1,6 @@
-const { NotFoundException } = require('../errors/api-error.class');
-const { Configuration, ConfigurationVersion } = require('../models');
-const sequelize = require('../db');
+const { NotFoundException } = require('../errors/api-error.class')
+const { Configuration, ConfigurationVersion } = require('../models')
+const sequelize = require('../db')
 
 /**
  * DAO for a Configuration
@@ -11,7 +11,14 @@ class ConfigurationDao {
         // also put alias latestVersionNumber, which is the MAX versionNumber of the ConfigurationVersions
         this.configurationLeftJoinRules = {
             attributes: {
-                include: [[sequelize.literal('(SELECT MAX("versionNumber") FROM "ConfigurationVersions" WHERE "configId" = "Configuration"."id")'), 'latestVersionNumber']],
+                include: [
+                    [
+                        sequelize.literal(
+                            '(SELECT MAX("versionNumber") FROM "ConfigurationVersions" WHERE "configId" = "Configuration"."id")'
+                        ),
+                        'latestVersionNumber'
+                    ]
+                ],
                 exclude: ['deletedAt']
             },
             include: {
@@ -24,7 +31,7 @@ class ConfigurationDao {
             },
             raw: true,
             group: ['Configuration.id', 'ConfigurationRules.id']
-        };
+        }
     }
 
     /**
@@ -36,12 +43,17 @@ class ConfigurationDao {
         const allConfigurations = await this.getAll()
 
         if (!allConfigurations) {
-            throw new NotFoundException('No configurations found while getting Current Active Configuration List')
+            throw new NotFoundException(
+                'No configurations found while getting Current Active Configuration List'
+            )
         }
 
         // filter the active and latest Configurations
-        return allConfigurations.filter(config =>
-            config.active && config.latestVersionNumber === config['ConfigurationRules.versionNumber']
+        return allConfigurations.filter(
+            (config) =>
+                config.active &&
+                config.latestVersionNumber ===
+                    config['ConfigurationRules.versionNumber']
         )
     }
 
@@ -61,16 +73,18 @@ class ConfigurationDao {
 
         // The version is minimum 1
         if (!latestVersion) {
-            throw new NotFoundException(`No version for Configuration w/ id #${configuration.id} was found`);
+            throw new NotFoundException(
+                `No version for Configuration w/ id #${configId} was found`
+            )
         }
 
-        return latestVersion;
+        return latestVersion
     }
 
     /**
      * Get the latest Version of a Configuration
      * @param {*} configId - the id of the Configuration to find the latest Version
-     * @param {*} id 
+     * @param {*} id
      * @returns the latest Version of the Configuration
      */
     async getLatestConfigurationVersion(configId) {
@@ -83,13 +97,15 @@ class ConfigurationDao {
                 configId
             },
             raw: true
-        });
+        })
 
         if (!latestConfigurationVersion) {
-            throw new NotFoundException(`No latest version for Configuration w/ id #${configId} was found`);
+            throw new NotFoundException(
+                `No latest version for Configuration w/ id #${configId} was found`
+            )
         }
 
-        return latestConfigurationVersion;
+        return latestConfigurationVersion
     }
 
     /**
@@ -98,7 +114,7 @@ class ConfigurationDao {
      * @returns all Configurations
      */
     async getAll() {
-        return await Configuration.findAll(this.configurationLeftJoinRules);
+        return await Configuration.findAll(this.configurationLeftJoinRules)
     }
 
     /**
@@ -114,12 +130,15 @@ class ConfigurationDao {
                 exclude: ['deletedAt']
             },
             raw: true
-        });
-        const latestConfigurationVersion = await this.getLatestConfigurationVersion(configurationId);
+        })
+        const latestConfigurationVersion =
+            await this.getLatestConfigurationVersion(configurationId)
 
         // Check if a Configuration entry exists
         if (!configuration) {
-            throw new NotFoundException(`Configuration w/ id #${configurationId} could not be found.`);
+            throw new NotFoundException(
+                `Configuration w/ id #${configurationId} could not be found.`
+            )
         }
 
         return {
@@ -132,52 +151,58 @@ class ConfigurationDao {
      * Creates a new Configuration entry in the DB
      * Adds a record in the Configurations and ConfigurationVersions tables
      * @param {*} data - data of the new Configuration
-     * @returns 
+     * @returns
      */
     async create({ id: configurationId, ...newData }) {
-        return await sequelize.transaction(async t => {
+        return await sequelize.transaction(async () => {
             const newConfiguration = await Configuration.create({
                 active: newData.active
-            });
+            })
             await ConfigurationVersion.create({
                 ...newData,
                 versionNumber: 1,
                 configId: newConfiguration.id
-            });
+            })
 
-            return newConfiguration.id;
+            return newConfiguration.id
         })
     }
 
     /**
      * Updates a whole Configuration entry in the DB
      * Gets the last Version of the Configurations
-     * 
+     *
      * Updates the active Configuration active status
      * And creates the next Configuration Version
      * @param {*} data - new data of the Configuration
-     * @returns 
+     * @returns
      */
     async updateWhole({ id: configurationId, ...newData }) {
         // Get current latest version of the Configuration
-        const latestVersion = await this.getLatestConfigurationVersionNumber(configurationId);
+        const latestVersion = await this.getLatestConfigurationVersionNumber(
+            configurationId
+        )
 
-        return await sequelize.transaction(async t => {
+        return await sequelize.transaction(async () => {
             // update the Configuration
-            await Configuration.update({
-                active: newData.active,
-            }, {
-                where: {
-                    id: configurationId
+            await Configuration.update(
+                {
+                    active: newData.active
+                },
+                {
+                    where: {
+                        id: configurationId
+                    }
                 }
-            });
+            )
 
             // create a new Version of the Configuration
-            const { createdAt, versionNumber } = await ConfigurationVersion.create({
-                ...newData,
-                configId: configurationId,
-                versionNumber: 1 + latestVersion,
-            });
+            const { createdAt, versionNumber } =
+                await ConfigurationVersion.create({
+                    ...newData,
+                    configId: configurationId,
+                    versionNumber: 1 + latestVersion
+                })
 
             return {
                 versionNumber,
@@ -189,36 +214,41 @@ class ConfigurationDao {
     /**
      * Patches a Configuration
      * Updates Configuration
-     * 
+     *
      * Creates a new Version of the Configuration, preserving the old rules
      * And patches the given ones
-     * @param {*} configuration - newly incoming Configuration data 
+     * @param {*} configuration - newly incoming Configuration data
      */
     async patchConfiguration({ id: configurationId, ...newData }) {
         // get current data from DB
-        const { id, createdAt, ...currentData } = await this.getFullConfigurationById(configurationId);
+        const { id, createdAt, ...currentData } =
+            await this.getFullConfigurationById(configurationId)
 
-        return await sequelize.transaction(async t => {
+        return await sequelize.transaction(async () => {
             // update the Configuration
-            await Configuration.update({
-                active: newData.active ?? currentData.active,
-            }, {
-                where: {
-                    id: configurationId
+            await Configuration.update(
+                {
+                    active: newData.active ?? currentData.active
+                },
+                {
+                    where: {
+                        id: configurationId
+                    }
                 }
-            });
+            )
 
             // create a new Version of the Configuration
-            const { createdAt, versionNumber } = await ConfigurationVersion.create({
-                ...currentData,
-                ...newData,
-                configId: configurationId,
-                versionNumber: 1 + currentData.versionNumber,
-            });
+            const { createdAt: updatedAt, versionNumber } =
+                await ConfigurationVersion.create({
+                    ...currentData,
+                    ...newData,
+                    configId: configurationId,
+                    versionNumber: 1 + currentData.versionNumber
+                })
 
             return {
                 versionNumber,
-                updatedAt: createdAt
+                updatedAt
             }
         })
     }
@@ -227,15 +257,15 @@ class ConfigurationDao {
      * Deletes a Configuration
      * Configuration schema uses Paranoid strategy, so the record will be soft deleted
      * This means that it will have a deletedAt property and will not be considered in queries
-     * @param {*} configurationId 
+     * @param {*} configurationId
      */
     async deleteConfiguration(configurationId) {
         return await Configuration.destroy({
             where: {
                 id: configurationId
             }
-        });
+        })
     }
 }
 
-module.exports = ConfigurationDao;
+module.exports = ConfigurationDao

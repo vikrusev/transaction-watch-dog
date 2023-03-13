@@ -14,18 +14,26 @@ const filterTransactions = (transactionsData, activeConfigurationList) => {
     for (const transaction of transactionsData) {
         for (const configuration of activeConfigurationList) {
             // check if the Transaction is satisfied by the Configuration
-            const isSatisfied = satisfiedByConfiguration(transaction, configuration)
+            const isSatisfied = satisfiedByConfiguration(
+                transaction,
+                configuration
+            )
 
             if (isSatisfied) {
                 // initialise transaction property
                 if (!transactionsWithConfigurations[transaction.hash]) {
                     transactionsWithConfigurations[transaction.hash] = {
                         transactionData: transaction,
-                        configurationIds: [configuration['ConfigurationRules.id']]
+                        configurationIds: [
+                            configuration['ConfigurationRules.id']
+                        ]
                     }
-                }
-                else {
-                    transactionsWithConfigurations[transaction.hash].configurationIds.push(configuration['ConfigurationRules.id'])
+                } else {
+                    transactionsWithConfigurations[
+                        transaction.hash
+                    ].configurationIds.push(
+                        configuration['ConfigurationRules.id']
+                    )
                 }
             }
         }
@@ -58,19 +66,19 @@ const satisfiedByConfiguration = (transaction, configuration) => {
 
 /**
  * Remove ConfigurationRules. prefixes from the Configuration object
- * @param {*} configuration 
+ * @param {*} configuration
  * @returns object w/ ConfigurationRules w/ no prefixes
  */
 const getCleanConfigurationRules = (configuration) => {
     return Object.keys(configuration)
-                .filter((key) => key.startsWith('ConfigurationRules'))
-                .reduce((newData, key) => {
-                    const [prefix, k] = key.split('.')
-                    newData[k] = configuration[key]
-                    return newData
-                }, {})
+        .filter((key) => key.startsWith('ConfigurationRules'))
+        .reduce((newData, key) => {
+            const k = key.split('.')[1]
+            newData[k] = configuration[key]
+            return newData
+        }, {})
 }
 
 module.exports = {
     filterTransactions
-};
+}

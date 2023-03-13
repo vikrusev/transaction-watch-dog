@@ -1,4 +1,4 @@
-const ConfigurationDao = require('../daos/configuration.dao');
+const ConfigurationDao = require('../daos/configuration.dao')
 
 /**
  * Service, responsible for managing and providing the active Configurations
@@ -7,10 +7,11 @@ const ConfigurationDao = require('../daos/configuration.dao');
 class ActiveConfiguration {
     constructor() {
         this.activeConfigurationList = []
-        this.configurationDao = new ConfigurationDao();
+        this.configurationDao = new ConfigurationDao()
 
         this.init = this.init.bind(this)
-        this.getActiveConfigurationList = this.getActiveConfigurationList.bind(this)
+        this.getActiveConfigurationList =
+            this.getActiveConfigurationList.bind(this)
     }
 
     /**
@@ -18,17 +19,19 @@ class ActiveConfiguration {
      */
     async init() {
         try {
-            this.activeConfigurationList = await this.configurationDao.getCurrentActiveConfigurations()
-        }
-        catch(error) {
-            console.error('Something went wrong while initialising Current Active Configuration List')
-            process.exit(-2);
+            this.activeConfigurationList =
+                await this.configurationDao.getCurrentActiveConfigurations()
+        } catch (error) {
+            console.error(
+                'Something went wrong while initialising Current Active Configuration List'
+            )
+            process.exit(-2)
         }
     }
 
     /**
      * Get the activeConfiguration list
-     * @returns 
+     * @returns
      */
     getActiveConfigurationList() {
         return this.activeConfigurationList

@@ -1,13 +1,12 @@
-const Server = require('./server');
-const WorkerPool = require('./worker-pool');
+const Server = require('./server')
+const WorkerPool = require('./worker-pool')
 const EthereumMainnetSubscription = require('./web3')
 
 // The server is responsible for the REST API
-const server = new Server();
+const server = new Server()
 
 const port = process.env.APP_PORT ?? 3000
-server.start(port);
-
+server.start(port)
 ;(async () => {
     // Init Worker Pool
     if (process.env.WORKER_POOL_ENABLED === '1') {
@@ -20,11 +19,16 @@ server.start(port);
         subscriptionType: 'pendingTransactions',
         PROVIDER_WEBSOCKET: process.env.PROVIDER_WEBSOCKET
     }
-    const ethSubscription = new EthereumMainnetSubscription(ethSubscriptionOptions);
+    const ethSubscription = new EthereumMainnetSubscription(
+        ethSubscriptionOptions
+    )
 
     // Start if explicitly said so
     // The idea is to reduce distraction while developing
-    if (process.env.NODE_ENV === 'production' || process.env.MONITOR_ETHEREUM_MAINNET === '1') {
-        ethSubscription.startMonitoring();
+    if (
+        process.env.NODE_ENV === 'production' ||
+        process.env.MONITOR_ETHEREUM_MAINNET === '1'
+    ) {
+        ethSubscription.startMonitoring()
     }
 })()

@@ -1,19 +1,18 @@
-const { InvalidFormatException } = require('../errors/api-error.class');
-const configRouter = require('./config.route');
+const { InvalidFormatException } = require('../errors/api-error.class')
+const configRouter = require('./config.route')
 
 /**
- * Register all available 
- * @param {*} fastify 
- * @param {*} options 
+ * Register all available
+ * @param {*} fastify
  */
-async function registerRoutes(fastify, options) {
+async function registerRoutes(fastify) {
     fastify.setValidatorCompiler(({ schema }) => {
-        return data => {
+        return (data) => {
             const result = schema.validate(data)
             if (result.error) {
                 throw new InvalidFormatException(result.error.message)
             }
-            return { value: result.value };
+            return { value: result.value }
         }
     })
     // Custom Error Handler is not reached for some reason
@@ -22,7 +21,7 @@ async function registerRoutes(fastify, options) {
     //         reply.status(422).send(new Error('validation failed'))
     //     }
     // })
-    fastify.register(configRouter, { prefix: '/config' });
+    fastify.register(configRouter, { prefix: '/config' })
 }
 
-module.exports = registerRoutes;
+module.exports = registerRoutes

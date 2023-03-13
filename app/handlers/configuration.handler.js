@@ -1,48 +1,49 @@
-const { NotFoundException } = require('../errors/api-error.class');
-const ConfigurationDao = require('../daos/configuration.dao');
+const { NotFoundException } = require('../errors/api-error.class')
+const ConfigurationDao = require('../daos/configuration.dao')
 
 class ConfigurationController {
     constructor() {
-        this.configurationDao = new ConfigurationDao();
+        this.configurationDao = new ConfigurationDao()
 
-        this.getAllConfigurations = this.getAllConfigurations.bind(this);
-        this.getConfigurationById = this.getConfigurationById.bind(this);
-        this.createConfiguration = this.createConfiguration.bind(this);
-        this.updateOrCreateWholeConfiguration = this.updateOrCreateWholeConfiguration.bind(this);
-        this.patchConfiguration = this.patchConfiguration.bind(this);
-        this.deleteConfiguration = this.deleteConfiguration.bind(this);
+        this.getAllConfigurations = this.getAllConfigurations.bind(this)
+        this.getConfigurationById = this.getConfigurationById.bind(this)
+        this.createConfiguration = this.createConfiguration.bind(this)
+        this.updateOrCreateWholeConfiguration =
+            this.updateOrCreateWholeConfiguration.bind(this)
+        this.patchConfiguration = this.patchConfiguration.bind(this)
+        this.deleteConfiguration = this.deleteConfiguration.bind(this)
     }
 
     /**
      * Get all available Configurations and their rules
-     * @param {*} request 
-     * @param {*} reply 
-     * @returns 
+     * @param {*} request
+     * @param {*} reply
+     * @returns
      */
-    async getAllConfigurations(request, reply) {
+    async getAllConfigurations() {
         return await this.configurationDao.getAll()
     }
 
     /**
      * Get Configuration by id
-     * @param {*} request 
-     * @param {*} reply 
-     * @returns 
+     * @param {*} request
+     * @param {*} reply
+     * @returns
      */
-    async getConfigurationById({ params }, reply) {
-        return await this.configurationDao.getFullConfigurationById(params.id);
+    async getConfigurationById({ params }) {
+        return await this.configurationDao.getFullConfigurationById(params.id)
     }
 
     /**
      * Creates a Configuration in the DB
      * Sets HTTP status code to 201 if the operation is successful
      * @param {*} param0 - incoming data of the configuration object
-     * @param {*} reply 
+     * @param {*} reply
      * @returns - the id from the DB of the newly created Configuration row
      */
     async createConfiguration({ body: configurationData }, reply) {
         const newId = await this.configurationDao.create(configurationData)
-        reply.statusCode = 201;
+        reply.statusCode = 201
 
         return { newId }
     }
@@ -53,55 +54,59 @@ class ConfigurationController {
      * Both update and create will CREATE a new entry
      * This is because we DO want to preserve the Configuration rule versions
      * @param {*} param0 - incoming data of a Configuration
-     * @param {*} reply 
+     * @param {*} reply
      * @returns - the id from the DB of the newly created Configuration row
      */
     async updateOrCreateWholeConfiguration({ body: configurationData }, reply) {
         // In case of an error, the statusCode will be set accordingly by the api-error-handler
-        reply.statusCode = 201;
+        reply.statusCode = 201
 
         try {
             // Will throw NotFoundException if the resource does not exist in the DB
-            await this.configurationDao.getFullConfigurationById(configurationData.id);
-        }
-        catch(error) {
+            await this.configurationDao.getFullConfigurationById(
+                configurationData.id
+            )
+        } catch (error) {
             // Resourse was not found in the DB
             // Create a new one
             if (error instanceof NotFoundException) {
-                return this.createConfiguration({ body: configurationData }, reply)
+                return this.createConfiguration(
+                    { body: configurationData },
+                    reply
+                )
             }
 
             // Otherwise, propagate the error up
-            throw error;
+            throw error
         }
 
         // The resourse exists - update it
         // NOTE: The method CREATES a new record because of Configuration rule versioning
-        return await this.configurationDao.updateWhole(configurationData);
+        return await this.configurationDao.updateWhole(configurationData)
     }
 
     /**
      * Patches a Configuration
      * Preserve all data and just update properties specified in the incoming data
      * @param {*} param0 - incoming new data for a Configuration
-     * @param {*} reply 
+     * @param {*} reply
      */
     async patchConfiguration({ body: configurationData }, reply) {
         // In case of an error, the statusCode will be set accordingly by the api-error-handler
-        reply.statusCode = 201;
+        reply.statusCode = 201
 
-        return await this.configurationDao.patchConfiguration(configurationData);
+        return await this.configurationDao.patchConfiguration(configurationData)
     }
 
     /**
      * Deletes a Configuration
      * @param {*} param0
-     * @param {*} reply 
+     * @param {*} reply
      */
     async deleteConfiguration({ params }, reply) {
         reply.statusCode = 204
-        return await this.configurationDao.deleteConfiguration(params.id);
+        return await this.configurationDao.deleteConfiguration(params.id)
     }
 }
 
-module.exports = new ConfigurationController();
+module.exports = new ConfigurationController()

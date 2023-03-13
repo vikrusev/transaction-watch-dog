@@ -1,23 +1,33 @@
-const { Transaction, TransactionConfigVersion } = require('../models');
-const sequelize = require('../db');
+const { Transaction, TransactionConfigVersion } = require('../models')
+const sequelize = require('../db')
 
 /**
  * DAO for a Transactions
  */
 class TransactionDao {
-    constructor() { }
+    constructor() {}
 
     async bulkInsertTransctions(entries) {
         // get an array of the actual Transactions data
-        const transactionsData = Object.values(entries).map(transaction => transaction.transactionData)
+        const transactionsData = Object.values(entries).map(
+            (transaction) => transaction.transactionData
+        )
 
-        return await sequelize.transaction(async t => {
-            const newTransactions = await Transaction.bulkCreate(transactionsData);
+        return await sequelize.transaction(async () => {
+            const newTransactions = await Transaction.bulkCreate(
+                transactionsData
+            )
 
-            const flatMapRelations = this.flatMapNewTransactionIdToConfigurationVersion(newTransactions, entries)
-            await TransactionConfigVersion.bulkCreate(flatMapRelations);
+            const flatMapRelations =
+                this.flatMapNewTransactionIdToConfigurationVersion(
+                    newTransactions,
+                    entries
+                )
+            await TransactionConfigVersion.bulkCreate(flatMapRelations)
 
-            console.log(`Successfully added ${newTransactions.length} transactions!`)
+            console.log(
+                `Successfully added ${newTransactions.length} transactions!`
+            )
         })
     }
 
@@ -51,4 +61,4 @@ class TransactionDao {
     }
 }
 
-module.exports = TransactionDao;
+module.exports = TransactionDao

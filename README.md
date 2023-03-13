@@ -60,7 +60,6 @@
 ## TODO
 
 * better loggin system
-* include ESLint
 * implement `DI Awilix`
 * better README documentation
 * query optimization
