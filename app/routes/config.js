@@ -14,7 +14,7 @@ async function config(fastify, options) {
     // Get a single Configuration, given its id
     fastify.get(
         '/:id',
-        { preHandler: validateDto(configDtos.getConfigById) },
+        { preHandler: validateDto(configDtos.identifyConfigById) },
         configHandlers.getConfigurationById
     )
 
