@@ -18,7 +18,11 @@ class EthereumMainnetSubscription {
     startMonitoring() {
         this.subscription
             .on('data', (txHash) => {
-                this.web3.getTransaction(txHash).then((transactionData) => eventEmitter.emit('test-event', transactionData));
+                this.web3.getTransaction(txHash).then((transactionData) => {
+                    if (transactionData) {
+                        eventEmitter.emit('new-transaction', transactionData)
+                    }
+                });
             })
     }
 
