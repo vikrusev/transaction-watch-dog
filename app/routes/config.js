@@ -50,6 +50,13 @@ async function config(fastify, options) {
         },
         configHandlers.patchConfiguration
     )
+
+    // Delete a Configuration
+    fastify.delete(
+        '/:id',
+        { preHandler: validateDto(configDtos.identifyConfigById) },
+        configHandlers.deleteConfiguration
+    )
 }
 
 module.exports = config

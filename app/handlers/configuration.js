@@ -10,6 +10,7 @@ class ConfigurationController {
         this.createConfiguration = this.createConfiguration.bind(this);
         this.updateOrCreateWholeConfiguration = this.updateOrCreateWholeConfiguration.bind(this);
         this.patchConfiguration = this.patchConfiguration.bind(this);
+        this.deleteConfiguration = this.deleteConfiguration.bind(this);
     }
 
     /**
@@ -90,6 +91,16 @@ class ConfigurationController {
         reply.statusCode = 201;
 
         return await this.configurationDao.patchConfiguration(configurationData);
+    }
+
+    /**
+     * Deletes a Configuration
+     * @param {*} param0
+     * @param {*} reply 
+     */
+    async deleteConfiguration({ params }, reply) {
+        reply.statusCode = 204
+        return await this.configurationDao.deleteConfiguration(params.id);
     }
 }
 

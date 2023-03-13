@@ -202,6 +202,20 @@ class ConfigurationDao {
             }
         })
     }
+
+    /**
+     * Deletes a Configuration
+     * Configuration schema uses Paranoid strategy, so the record will be soft deleted
+     * This means that it will have a deletedAt property and will not be considered in queries
+     * @param {*} configurationId 
+     */
+    async deleteConfiguration(configurationId) {
+        return await Configuration.destroy({
+            where: {
+                id: configurationId
+            }
+        });
+    }
 }
 
 module.exports = ConfigurationDao;
